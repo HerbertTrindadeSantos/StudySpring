@@ -34,7 +34,7 @@ public class WorkerService {
         workerRepository.deleteById(id);
     }
 
-    public WorkerEntity IdSearch(UUID id) {
+    public WorkerEntity findById(UUID id) {
         WorkerEntity worker = workerRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
 
         return worker;
