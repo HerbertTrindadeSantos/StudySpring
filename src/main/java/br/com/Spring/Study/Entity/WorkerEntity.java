@@ -18,8 +18,8 @@ import java.util.UUID;
 public class WorkerEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "ID",updatable = false,nullable = false)
     private UUID id;
 
     @Column(name = "Name",nullable = false)

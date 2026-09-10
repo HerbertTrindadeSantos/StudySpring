@@ -2,6 +2,7 @@ package br.com.Spring.Study.Service;
 
 import br.com.Spring.Study.Entity.WorkerEntity;
 import br.com.Spring.Study.Repository.WorkerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +10,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class WorkerService {
 
-    @Autowired
+
     private WorkerRepository workerRepository;
 
     public WorkerEntity register(WorkerEntity worker) {

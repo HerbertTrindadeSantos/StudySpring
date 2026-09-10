@@ -16,8 +16,8 @@ import java.util.UUID;
 public class TaskEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "ID",updatable = false,nullable = false)
     private UUID id;
 
     @Column(name = "Name")
@@ -26,9 +26,8 @@ public class TaskEntity {
     @Column(name = "Level")
     private int level;
 
-    @Column(name = "Worker")
     @OneToMany(mappedBy = "task")
-    private List<WorkerEntity> workers;
+    private List<WorkerEntity> worker;
 
 
 }

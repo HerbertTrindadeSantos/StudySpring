@@ -1,0 +1,27 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: worker_postgres
+    environment:
+      POSTGRES_DB: worker_db
+      POSTGRES_USER: post_user
+      POSTGRES_PASSWORD: post_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+      # PC(host) : Postgres(docker)
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - worker_db-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U post_user -d worker_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  worker_db-network:
