@@ -1,33 +1,36 @@
 package br.com.Spring.Study.Entity;
 
+import br.com.Spring.Study.Entity.Enum.TaskLevel;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "tab_jobs")
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@ToString(exclude = "worker")
+@EqualsAndHashCode(exclude = "worker")
+@Entity
+@Table(name = "tb_jobs")
 public class TaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID",updatable = false,nullable = false)
+    @Column(updatable = false,nullable = false)
     private UUID id;
 
-    @Column(name = "Name")
+    @Column(nullable = false,length = 100)
     private String name;
 
-    @Column(name = "Level")
-    private int level;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "level",nullable = false,length = 20)
+    private TaskLevel task;
 
     @OneToMany(mappedBy = "task")
-    private List<WorkerEntity> worker;
+    private List<WorkerEntity> workers = new ArrayList<>();
 
 
 }
