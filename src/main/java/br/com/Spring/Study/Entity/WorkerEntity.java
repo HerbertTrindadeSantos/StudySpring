@@ -1,43 +1,43 @@
 package br.com.Spring.Study.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
 
-@Entity
-@Table(name = "tb_registration")
+@Getter @Setter
+@ToString(exclude = "task")
+@EqualsAndHashCode(exclude = "task")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Entity
+@Table(name = "tb_registration")
 public class WorkerEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID",updatable = false,nullable = false)
+    @Column(updatable = false,nullable = false)
     private UUID id;
 
-    @Column(name = "Name",nullable = false)
+    @Column(nullable = false,length = 100)
     private String name;
 
-    @Column(name = "Company",nullable = false)
+    @Column(nullable = false,length = 70)
     private String company;
 
-    @Column(name = "Position",nullable = false)
+    @Column(nullable = false,length = 50)
     private String position;
 
-    @Column(name = "Salary",nullable = false)
+    @Column(nullable = false)
     private BigDecimal salary;
 
-    @Column(name = "DateStart",nullable = false)
+    @Column(nullable = false)
     private LocalDate dateStart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private TaskEntity task;
 

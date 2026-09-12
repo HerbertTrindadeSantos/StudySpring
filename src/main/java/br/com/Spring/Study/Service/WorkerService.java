@@ -14,7 +14,7 @@ import java.util.UUID;
 public class WorkerService {
 
 
-    private WorkerRepository workerRepository;
+    private final WorkerRepository workerRepository;
 
     public WorkerEntity register(WorkerEntity worker) {
         return workerRepository.save(worker);
@@ -36,7 +36,7 @@ public class WorkerService {
         workerRepository.deleteById(id);
     }
 
-    public WorkerEntity findById(UUID id) {
+    public WorkerEntity findId(UUID id) {
         WorkerEntity worker = workerRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
 
         return worker;
