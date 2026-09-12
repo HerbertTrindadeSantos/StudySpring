@@ -2,6 +2,8 @@ package br.com.Spring.Study.Controller;
 
 import br.com.Spring.Study.Entity.WorkerEntity;
 import br.com.Spring.Study.Service.WorkerService;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,27 +14,31 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/worker")
+@RequiredArgsConstructor
 public class WorkerController {
 
-    @Autowired
-    private WorkerService workerService;
+    private final WorkerService workerService;
 
-    @PostMapping("/register")
+    @PostMapping()
     public ResponseEntity<?> register(@RequestBody WorkerEntity worker) {
-        WorkerEntity newWoker = workerService.register(worker);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newWoker);
+        try {
+            WorkerEntity newWorker = workerService.register(worker);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newWorker);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
-    @GetMapping("/allWorkers")
+    @GetMapping()
     public ResponseEntity<?> findByAll(){
         List<WorkerEntity> workers = workerService.findByAll();
         return  ResponseEntity.ok(workers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable UUID id){
+    public ResponseEntity<?> findId(@PathVariable UUID id){
         try {
-            WorkerEntity worker = workerService.findById(id);
+            WorkerEntity worker = workerService.findId(id);
             return ResponseEntity.ok(worker);
         } catch (RuntimeException e){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
