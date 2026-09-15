@@ -1,6 +1,6 @@
-package br.com.Spring.Study.Entity;
+package br.com.Spring.Study.entity;
 
-import br.com.Spring.Study.Entity.Enum.TaskLevel;
+import br.com.Spring.Study.entity.enums.TaskLevel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,16 +18,16 @@ import java.util.UUID;
 public class TaskEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false)
-    private UUID id;
+    private Long id;
 
     @Column(nullable = false,length = 100)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "level",nullable = false,length = 20)
-    private TaskLevel task;
+    @Column(nullable = false,length = 30)
+    private TaskLevel level;
 
     @OneToMany(mappedBy = "task")
     private List<WorkerEntity> workers = new ArrayList<>();

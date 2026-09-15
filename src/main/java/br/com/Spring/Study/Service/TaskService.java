@@ -1,9 +1,9 @@
-package br.com.Spring.Study.Service;
+package br.com.Spring.Study.service;
 
-import br.com.Spring.Study.Entity.TaskEntity;
-import br.com.Spring.Study.Repository.TaskRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import br.com.Spring.Study.dto.TaskRequestDTO;
+import br.com.Spring.Study.entity.TaskEntity;
+import br.com.Spring.Study.exceptions.TaskNotFoundException;
+import br.com.Spring.Study.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,24 +16,24 @@ public class TaskService {
 
     private final TaskRepository taskRepository;
 
-    public TaskEntity register(TaskEntity task){
+    public TaskRequestDTO register(TaskEntity task){
         return taskRepository.save(task);
     }
 
-    public TaskEntity updade(UUID id,TaskEntity newTask){
+    public TaskRequestDTO updade(UUID id, TaskEntity newTask){
 
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
+        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa nao encontrada"));
         taskEntity.setName(newTask.getName());
         taskEntity.setTask(newTask.getTask());
         return taskRepository.save(taskEntity);
     }
 
-    public void delete(UUID id){
+    public void delete(Long id){
         taskRepository.deleteById(id);
     }
 
-    public TaskEntity findId(UUID id){
-        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
+    public TaskRequestDTO findId(Long id){
+        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa nao encontrada"));
         return task;
     }
 

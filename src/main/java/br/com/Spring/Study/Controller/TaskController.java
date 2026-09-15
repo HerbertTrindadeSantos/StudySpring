@@ -1,7 +1,7 @@
-package br.com.Spring.Study.Controller;
+package br.com.Spring.Study.controller;
 
-import br.com.Spring.Study.Entity.TaskEntity;
-import br.com.Spring.Study.Service.TaskService;
+import br.com.Spring.Study.entity.TaskEntity;
+import br.com.Spring.Study.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findId(@PathVariable  UUID id){
+    public ResponseEntity<?> findId(@PathVariable Long id){
         try {
             TaskEntity task = taskService.findId(id);
             return ResponseEntity.ok(task);
