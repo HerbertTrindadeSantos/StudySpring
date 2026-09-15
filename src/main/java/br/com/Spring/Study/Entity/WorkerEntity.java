@@ -1,5 +1,6 @@
-package br.com.Spring.Study.Entity;
+package br.com.Spring.Study.entity;
 
+import br.com.Spring.Study.entity.enums.WorkerLevel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,18 +19,16 @@ import java.util.UUID;
 public class WorkerEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(updatable = false,nullable = false)
-    private UUID id;
+    private Long id;
 
     @Column(nullable = false,length = 100)
     private String name;
 
-    @Column(nullable = false,length = 70)
-    private String company;
-
-    @Column(nullable = false,length = 50)
-    private String position;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false,length = 30)
+    private WorkerLevel level;
 
     @Column(nullable = false)
     private BigDecimal salary;

@@ -1,16 +1,15 @@
-package br.com.Spring.Study.Controller;
+package br.com.Spring.Study.controller;
 
-import br.com.Spring.Study.Entity.WorkerEntity;
-import br.com.Spring.Study.Service.WorkerService;
-import lombok.AllArgsConstructor;
+import br.com.Spring.Study.dto.WorkerRequestDTO;
+import br.com.Spring.Study.dto.WorkerResponseDTO;
+import br.com.Spring.Study.entity.WorkerEntity;
+import br.com.Spring.Study.service.WorkerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/worker")
@@ -20,9 +19,9 @@ public class WorkerController {
     private final WorkerService workerService;
 
     @PostMapping()
-    public ResponseEntity<?> register(@RequestBody WorkerEntity worker) {
+    public ResponseEntity<WorkerResponseDTO> register(@RequestBody WorkerRequestDTO worker) {
         try {
-            WorkerEntity newWorker = workerService.register(worker);
+            WorkerResponseDTO newWorker = workerService.register(worker);
             return ResponseEntity.status(HttpStatus.CREATED).body(newWorker);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -30,15 +29,15 @@ public class WorkerController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> findByAll(){
-        List<WorkerEntity> workers = workerService.findByAll();
+    public ResponseEntity<List<WorkerResponseDTO>> findByAll(){
+        List<WorkerResponseDTO> workers = workerService.findByAll();
         return  ResponseEntity.ok(workers);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findId(@PathVariable UUID id){
+    public ResponseEntity<WorkerResponseDTO> findId(@PathVariable Long id){
         try {
-            WorkerEntity worker = workerService.findId(id);
+            WorkerResponseDTO worker = workerService.findId(id);
             return ResponseEntity.ok(worker);
         } catch (RuntimeException e){
             return  ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -46,9 +45,9 @@ public class WorkerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable UUID id,@RequestBody WorkerEntity worker) {
+    public ResponseEntity<WorkerResponseDTO> update(@PathVariable Long id, @RequestBody WorkerRequestDTO worker) {
         try{
-            WorkerEntity newWorker = workerService.update(id,worker);
+            WorkerResponseDTO newWorker = workerService.update(id,worker);
             return ResponseEntity.ok(newWorker);
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -56,9 +55,9 @@ public class WorkerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable UUID id){
+    public ResponseEntity<WorkerResponseDTO> delete(@PathVariable Long id){
         try{
-            workerService.delete(id);
+            workerService.deleteById(id);
             return ResponseEntity.noContent().build();
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

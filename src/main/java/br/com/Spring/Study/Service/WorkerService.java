@@ -1,48 +1,61 @@
-package br.com.Spring.Study.Service;
+package br.com.Spring.Study.service;
 
-import br.com.Spring.Study.Entity.WorkerEntity;
-import br.com.Spring.Study.Repository.WorkerRepository;
+import br.com.Spring.Study.dto.WorkerRequestDTO;
+import br.com.Spring.Study.dto.WorkerResponseDTO;
+import br.com.Spring.Study.entity.WorkerEntity;
+import br.com.Spring.Study.exceptions.WorkerNotFoundException;
+import br.com.Spring.Study.mapper.WorkerMapper;
+import br.com.Spring.Study.repository.WorkerRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.UUID;
+
 
 @Service
 @RequiredArgsConstructor
 public class WorkerService {
 
-
+    private final WorkerMapper mapper;
     private final WorkerRepository workerRepository;
 
-    public WorkerEntity register(WorkerEntity worker) {
-        return workerRepository.save(worker);
+    public WorkerResponseDTO register(WorkerRequestDTO workerRequestDTO) {
+
+        WorkerEntity worker = mapper.toEntity(workerRequestDTO);
+
+        WorkerEntity savedWorker = workerRepository.save(worker);
+
+        return mapper.toResponseDTO(savedWorker) ;
     }
 
-    public WorkerEntity update(UUID id, WorkerEntity newWorker) {
-        WorkerEntity worker = workerRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
-        worker.setName(newWorker.getName());
-        worker.setSalary(newWorker.getSalary());
-        worker.setPosition(newWorker.getPosition());
-        worker.setCompany(newWorker.getCompany());
-        worker.setDateStart(newWorker.getDateStart());
-        worker.setTask(newWorker.getTask());
+    public WorkerResponseDTO update(Long id, WorkerRequestDTO workerRequestDTO) {
 
-        return workerRepository.save(worker);
+        WorkerEntity worker = workerRepository.findById(id)
+                .orElseThrow(() -> new WorkerNotFoundException("Usuario nao encontrado"));
+
+        WorkerEntity updateWorker = workerRepository.save(mapper.workerEntityUpdate(worker,workerRequestDTO));
+
+        return mapper.toResponseDTO(updateWorker) ;
     }
 
-    public void delete(UUID id) {
-        workerRepository.deleteById(id);
+    public void deleteById(long id) {
+
+        WorkerEntity worker = workerRepository.findById(id).
+                orElseThrow(() -> new WorkerNotFoundException("Usuario nao encontrado"));
+
+        workerRepository.delete(worker);
+
     }
 
-    public WorkerEntity findId(UUID id) {
-        WorkerEntity worker = workerRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario nao encontrado"));
-
-        return worker;
+    public WorkerResponseDTO findId(Long id) {
+        WorkerEntity worker = workerRepository.findById(id).orElseThrow(() -> new WorkerNotFoundException("Usuario nao encontrado"));
+        return mapper.toResponseDTO(worker);
     }
 
-    public List<WorkerEntity> findByAll(){
-        return workerRepository.findAll();
+    public List<WorkerResponseDTO> findByAll(){
+
+        return workerRepository.findAll()
+                .stream()
+                .map(mapper:: toResponseDTO)
+                .toList();
     }
 }
