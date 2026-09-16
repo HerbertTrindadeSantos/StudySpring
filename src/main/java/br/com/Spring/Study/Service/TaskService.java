@@ -1,8 +1,10 @@
 package br.com.Spring.Study.service;
 
 import br.com.Spring.Study.dto.TaskRequestDTO;
+import br.com.Spring.Study.dto.TaskResponseDTO;
 import br.com.Spring.Study.entity.TaskEntity;
 import br.com.Spring.Study.exceptions.TaskNotFoundException;
+import br.com.Spring.Study.mapper.TaskMapper;
 import br.com.Spring.Study.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,29 +17,50 @@ import java.util.UUID;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+    private final TaskMapper taskMapper;
 
-    public TaskRequestDTO register(TaskEntity task){
-        return taskRepository.save(task);
+    public TaskResponseDTO register(TaskRequestDTO task) {
+
+        TaskEntity taskEntity = taskMapper.toEntity(task);
+        TaskEntity savedTask = taskRepository.save(taskEntity);
+
+        return taskMapper.toTaskResponseDTO(savedTask);
+
     }
 
-    public TaskRequestDTO updade(UUID id, TaskEntity newTask){
+    public TaskResponseDTO update(Long id, TaskRequestDTO updateTask) {
 
-        TaskEntity taskEntity = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa nao encontrada"));
-        taskEntity.setName(newTask.getName());
-        taskEntity.setTask(newTask.getTask());
-        return taskRepository.save(taskEntity);
+        TaskEntity taskEntity = taskRepository.findById(id).
+                orElseThrow(() -> new TaskNotFoundException("Tarefa nao encontrada id:" + id));
+
+        taskEntity.setName(updateTask.name());
+        taskEntity.setLevel(updateTask.level());
+
+        TaskEntity updateTaskEntity = taskRepository.save(taskEntity);
+
+        return taskMapper.toTaskResponseDTO(updateTaskEntity);
     }
 
-    public void delete(Long id){
+    public void deleteById(Long id) {
+
+        if (!taskRepository.existsById(id)) {
+            throw new TaskNotFoundException("Task nao encontrada id: " + id);
+        }
+
         taskRepository.deleteById(id);
     }
 
-    public TaskRequestDTO findId(Long id){
-        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa nao encontrada"));
-        return task;
+    public TaskResponseDTO findId(Long id) {
+        TaskEntity task = taskRepository.findById(id).orElseThrow(() -> new TaskNotFoundException("Tarefa nao encontrada id: " + id));
+        return taskMapper.toTaskResponseDTO(task);
     }
 
-    public List<TaskEntity> findByAll(){
-        return taskRepository.findAll();
+    public List<TaskResponseDTO> findByAll() {
+
+        return taskRepository.
+                findAll().
+                stream().
+                map(taskMapper::toTaskResponseDTO).
+                toList();
     }
 }
