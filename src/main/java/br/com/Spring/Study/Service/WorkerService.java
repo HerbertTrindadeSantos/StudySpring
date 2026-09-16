@@ -8,6 +8,7 @@ import br.com.Spring.Study.mapper.WorkerMapper;
 import br.com.Spring.Study.repository.WorkerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 
@@ -24,38 +25,39 @@ public class WorkerService {
 
         WorkerEntity savedWorker = workerRepository.save(worker);
 
-        return mapper.toResponseDTO(savedWorker) ;
+        return mapper.toResponseDTO(savedWorker);
     }
 
     public WorkerResponseDTO update(Long id, WorkerRequestDTO workerRequestDTO) {
 
         WorkerEntity worker = workerRepository.findById(id)
-                .orElseThrow(() -> new WorkerNotFoundException("Usuario nao encontrado"));
+                .orElseThrow(() -> new WorkerNotFoundException("Worker nao encontrado id: " + id));
 
-        WorkerEntity updateWorker = workerRepository.save(mapper.workerEntityUpdate(worker,workerRequestDTO));
+        WorkerEntity updateWorker = workerRepository.save(mapper.workerEntityUpdate(worker, workerRequestDTO));
 
-        return mapper.toResponseDTO(updateWorker) ;
+        return mapper.toResponseDTO(updateWorker);
     }
 
     public void deleteById(long id) {
 
-        WorkerEntity worker = workerRepository.findById(id).
-                orElseThrow(() -> new WorkerNotFoundException("Usuario nao encontrado"));
-
-        workerRepository.delete(worker);
+        if (!workerRepository.existsById(id)) {
+            throw new WorkerNotFoundException("Worker nao encontrado id: " + id);
+        }
+        workerRepository.deleteById(id);
 
     }
 
     public WorkerResponseDTO findId(Long id) {
-        WorkerEntity worker = workerRepository.findById(id).orElseThrow(() -> new WorkerNotFoundException("Usuario nao encontrado"));
+        WorkerEntity worker = workerRepository.findById(id).
+                orElseThrow(() -> new WorkerNotFoundException("Worker nao encontrado id: " + id));
         return mapper.toResponseDTO(worker);
     }
 
-    public List<WorkerResponseDTO> findByAll(){
+    public List<WorkerResponseDTO> findByAll() {
 
         return workerRepository.findAll()
                 .stream()
-                .map(mapper:: toResponseDTO)
+                .map(mapper::toResponseDTO)
                 .toList();
     }
 }
